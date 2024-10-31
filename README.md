@@ -109,7 +109,7 @@ A Python-based weight tracking application that allows users to record their wei
 Run the application from the command line:
 
 ```bash
-python weight_tracker.py
+python weight_tracking_to_sql.py
 ```
 
 You will see the interactive menu:
