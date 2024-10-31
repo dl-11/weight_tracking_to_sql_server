@@ -214,7 +214,7 @@ pip install -r requirements.txt
 
 ## Files Included
 
-- `weight_tracker.py`: Main application code.
+- `weight_tracking_to_sql.py`: Main application code.
 - `requirements.txt`: List of Python dependencies.
 - `.gitignore`: Specifies files to ignore in the repository.
 - `README.md`: Project documentation (this file).
