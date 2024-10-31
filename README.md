@@ -20,8 +20,8 @@ A Python-based weight tracking application that allows users to record their wei
    Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/weight-tracker.git
-   cd weight-tracker
+   git clone https://github.com/dl-11/weight_tracking_to_sql_server
+   cd weight_tracking_to_sql_server
    ```
 
 2. **Set Up a Virtual Environment** (Optional but Recommended)
