@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import statistics
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 from collections import defaultdict
 import os
 
@@ -415,17 +414,18 @@ class WeightTracker:
             print("Not enough data for predictions.")
             return
 
-        dates = np.array([(entry.Date - data[0].Date).days for entry in data]).reshape(-1, 1)
+        dates = np.array([(entry.Date - data[0].Date).days for entry in data])
         weights = np.array([entry.Weight for entry in data])
 
-        model = LinearRegression()
-        model.fit(dates, weights)
+        # Using numpy.polyfit to fit a linear model
+        coefficients = np.polyfit(dates, weights, deg=1)
+        slope, intercept = coefficients
 
         # Predict next 30 days
-        future_dates = np.array([dates[-1][0] + i for i in range(1, 31)]).reshape(-1, 1)
-        predictions = model.predict(future_dates)
+        future_dates = np.array([dates[-1] + i for i in range(1, 31)])
+        predictions = slope * future_dates + intercept
 
-        future_dates_plot = [data[0].Date + timedelta(days=int(day[0])) for day in future_dates]
+        future_dates_plot = [data[0].Date + timedelta(days=int(day)) for day in future_dates]
 
         # Plotting
         plt.figure(figsize=(10, 6))
@@ -437,19 +437,6 @@ class WeightTracker:
         plt.legend()
         plt.grid(True)
         plt.show()
-
-    def backup_data(self):
-        """
-        Backup data to a CSV file named 'weight_data_backup.csv'.
-        """
-        # Backup data to a CSV file
-        self.cursor.execute("SELECT * FROM Weights")
-        data = self.cursor.fetchall()
-        columns = [column[0] for column in self.cursor.description]
-        df = pd.DataFrame(data, columns=columns)
-        backup_filename = 'weight_data_backup.csv'
-        df.to_csv(backup_filename, index=False)
-        print(f"Data backed up to {backup_filename}")
 
     def restore_data(self):
         """
@@ -530,12 +517,11 @@ class WeightTracker:
             print("4. Calculate statistics")
             print("5. Update weight entry")
             print("6. Predict future weight")
-            print("7. Backup data")
-            print("8. Restore data")
-            print("9. Export data")
-            print("10. Import data")
-            print("11. Exit")
-            choice = input("Choose an option (1-11): ")
+            print("7. Restore data")
+            print("8. Export data")
+            print("9. Import data")
+            print("10. Exit")
+            choice = input("Choose an option (1-10): ")
 
             if choice == '1':
                 self.add_weight_entry()
@@ -550,18 +536,16 @@ class WeightTracker:
             elif choice == '6':
                 self.predict_weight()
             elif choice == '7':
-                self.backup_data()
-            elif choice == '8':
                 self.restore_data()
-            elif choice == '9':
+            elif choice == '8':
                 self.export_data()
-            elif choice == '10':
+            elif choice == '9':
                 self.import_data()
-            elif choice == '11':
+            elif choice == '10':
                 self.exit()
                 break
             else:
-                print("Invalid option. Please choose a number between 1 and 11.")
+                print("Invalid option. Please choose a number between 1 and 10.")
 
 def main():
     """
